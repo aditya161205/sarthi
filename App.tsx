@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Home, 
@@ -11,8 +10,7 @@ import {
   Bell,
   Briefcase,
   Pill,
-  LogOut,
-  Languages
+  LogOut
 } from 'lucide-react';
 import { UserProfile, AppRoute, Doctor, Appointment, Notification, MedicalReport, PrescriptionData, MedicalEvent, AuthResponse } from './types';
 import { AuthService, MOCK_PATIENT_DATA } from './services/authService';
@@ -93,7 +91,6 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
   { id: '209', doctorId: '5', doctorName: 'Dr. Arjun Gupta', date: '2022-11-20', time: '05:00 PM', type: 'in-person', status: 'completed', notes: 'Ankle Sprain', diagnosis: 'Grade 1 Ligament Tear', prescription: ['Volini Spray', 'Aceclofenac'], userRating: 5 },
 ];
 
-// Empty Initial User for Context
 const INITIAL_USER: UserProfile = {
   name: "",
   age: 0,
@@ -154,7 +151,6 @@ function App() {
         setCurrentRoute(AppRoute.ONBOARDING);
       } else {
         setCurrentRoute(AppRoute.HOME);
-        // Only show tour if explicitly requested or maybe first time logic (simplified here)
         if (!isRestored) setShowTour(true); 
       }
 
@@ -173,7 +169,6 @@ function App() {
     setCurrentRoute(AppRoute.LOGIN);
   };
 
-  // --- Handlers ---
   const handleBookAppointment = (doctor: Doctor, date: string, time: string, type: 'video' | 'in-person') => {
     const newAppt: Appointment = {
       id: Date.now().toString(),
@@ -183,17 +178,13 @@ function App() {
       time,
       notes: "Booked via Sarthi AI",
       type,
-      status: 'pending' // Default to pending now
+      status: 'pending' 
     };
     setAppointments([...appointments, newAppt]);
-    
-    // Add notification
     setNotifications([
       { id: Date.now().toString(), title: 'Request Sent', message: `Appointment request sent to ${doctor.name}`, time: 'Just now', type: 'info', read: false },
       ...notifications
     ]);
-
-    // Show Confirmation Modal (Do not navigate immediately)
     setLastBookedAppointment(newAppt);
   };
 
@@ -224,16 +215,13 @@ function App() {
   };
 
   const handleOnboardingComplete = (newUser: UserProfile) => {
-    // Merge existing user auth data (id, email) with profile data
     const completeProfile = { ...user, ...newUser };
-    
     if (!completeProfile.reports || completeProfile.reports.length === 0) {
-        completeProfile.reports = MOCK_REPORTS; // Demo data
+        completeProfile.reports = MOCK_REPORTS; 
     }
-    
     setUser(completeProfile);
     setCurrentRoute(AppRoute.HOME);
-    setShowTour(true); // Trigger tour after onboarding
+    setShowTour(true); 
   };
 
   const handleDoctorSelectPatient = (apptId: string) => {
@@ -254,33 +242,28 @@ function App() {
   };
 
   const handleConsultationComplete = (data: PrescriptionData) => {
-    // 1. Create new Medical Event
     const newEvent: MedicalEvent = {
       id: Date.now().toString(),
       date: new Date().toISOString().split('T')[0],
       title: 'Doctor Visit',
       description: `Diagnosis: ${data.diagnosis}. Follow up: ${data.followUp || 'N/A'}`,
       type: 'diagnosis',
-      doctorName: currentDoctorProfile.name, // Use dynamic doctor name
+      doctorName: currentDoctorProfile.name,
       location: 'Apollo Clinic'
     };
 
-    // 2. Update User Profile (Add event, merge meds)
     const updatedUser = {
       ...user,
       medicalEvents: [newEvent, ...user.medicalEvents],
-      medications: [...new Set([...user.medications, ...data.medications])] // unique meds
+      medications: [...new Set([...user.medications, ...data.medications])]
     };
     setUser(updatedUser);
 
-    // 3. Mark appointment as completed
     if (selectedPatientId) {
       setAppointments(prev => prev.map(appt => 
         appt.id === selectedPatientId ? { ...appt, status: 'completed', diagnosis: data.diagnosis, prescription: data.medications } : appt
       ));
     }
-    
-    // Go back to dashboard
     setCurrentRoute(AppRoute.DOCTOR_HOME);
   };
 
@@ -290,67 +273,36 @@ function App() {
     ));
   };
 
-  // --- Render Current Page ---
   const renderPage = () => {
     switch (currentRoute) {
-      case AppRoute.LOGIN:
-        return <LoginPage onLogin={handleAuthSuccess} onNavigate={setCurrentRoute} />;
-      case AppRoute.SIGNUP:
-        return <SignupPage onSignup={handleAuthSuccess} onNavigate={setCurrentRoute} />;
-      case AppRoute.ONBOARDING:
-        return <OnboardingPage initialName={user.name} initialEmail={user.email} onComplete={handleOnboardingComplete} />;
-      case AppRoute.HOME:
-        return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} />;
-      case AppRoute.TRIAGE:
-        return <TriagePage user={user} onComplete={handleTriageComplete} />;
-      case AppRoute.DOCTORS:
-        return <DoctorsPage doctors={doctors} filterSpecialty={triageFilter} onBook={handleBookAppointment} />;
-      case AppRoute.PROFILE:
-        return <ProfilePage user={user} onUpdate={handleUpdateProfile} onLogout={handleLogout} />;
-      case AppRoute.DOCTOR_HOME:
-        return <DoctorDashboard 
-                  appointments={appointments} 
-                  onSelectPatient={handleDoctorSelectPatient} 
-                  onAccept={handleAcceptAppointment}
-                  onDecline={handleDeclineAppointment}
-               />;
+      case AppRoute.LOGIN: return <LoginPage onLogin={handleAuthSuccess} onNavigate={setCurrentRoute} />;
+      case AppRoute.SIGNUP: return <SignupPage onSignup={handleAuthSuccess} onNavigate={setCurrentRoute} />;
+      case AppRoute.ONBOARDING: return <OnboardingPage initialName={user.name} initialEmail={user.email} onComplete={handleOnboardingComplete} />;
+      case AppRoute.HOME: return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} />;
+      case AppRoute.TRIAGE: return <TriagePage user={user} onComplete={handleTriageComplete} />;
+      case AppRoute.DOCTORS: return <DoctorsPage doctors={doctors} filterSpecialty={triageFilter} onBook={handleBookAppointment} />;
+      case AppRoute.PROFILE: return <ProfilePage user={user} onUpdate={handleUpdateProfile} onLogout={handleLogout} />;
+      case AppRoute.DOCTOR_HOME: return <DoctorDashboard appointments={appointments} onSelectPatient={handleDoctorSelectPatient} onAccept={handleAcceptAppointment} onDecline={handleDeclineAppointment} />;
       case AppRoute.DOCTOR_CONSULT:
-        // Identify which appointment
         const apt = appointments.find(a => a.id === selectedPatientId) || null;
-        // In doctor mode, we pass the MOCK_PATIENT_DATA to simulate a rich patient profile 
-        // because 'user' state in App might be the doctor's own empty profile or irrelevant.
-        return <DoctorPatientView 
-                  user={isDoctorMode ? MOCK_PATIENT_DATA : user} 
-                  appointment={apt} 
-                  onBack={() => setCurrentRoute(AppRoute.DOCTOR_HOME)} 
-                  onComplete={handleConsultationComplete} 
-               />;
-      case AppRoute.DOCTOR_PROFILE:
-        return <DoctorProfilePage doctor={currentDoctorProfile} onUpdate={handleUpdateDoctor} onLogout={handleLogout} />;
-      default:
-        return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} />;
+        return <DoctorPatientView user={isDoctorMode ? MOCK_PATIENT_DATA : user} appointment={apt} onBack={() => setCurrentRoute(AppRoute.DOCTOR_HOME)} onComplete={handleConsultationComplete} />;
+      case AppRoute.DOCTOR_PROFILE: return <DoctorProfilePage doctor={currentDoctorProfile} onUpdate={handleUpdateDoctor} onLogout={handleLogout} />;
+      default: return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} />;
     }
   };
 
-  // Is this a patient-facing route with navigation?
   const showPatientNav = isAuthenticated && !isDoctorMode && ![AppRoute.ONBOARDING, AppRoute.LOGIN, AppRoute.SIGNUP].includes(currentRoute);
-  // Doctor Navigation
   const showDoctorNav = isAuthenticated && isDoctorMode && currentRoute !== AppRoute.DOCTOR_CONSULT;
-  
-  // Show header?
   const showHeader = isAuthenticated && ![AppRoute.ONBOARDING, AppRoute.LOGIN, AppRoute.SIGNUP].includes(currentRoute);
-
-  // Check if any medication is not taken for patient notification dot
   const hasPendingMeds = !isDoctorMode && user.medications && user.medications.some(m => !m.taken);
 
   return (
-    <div className={`${darkMode ? 'dark' : ''} h-screen flex justify-center bg-gray-100 dark:bg-black`}>
-      <div className="w-full max-w-md h-full bg-gray-50 dark:bg-gray-950 flex flex-col shadow-2xl relative border-x border-gray-200 dark:border-gray-800 transition-colors duration-300">
+    // Use dynamic viewport height (h-[100dvh]) to prevent mobile browser address bars from cutting off content
+    <div className={`${darkMode ? 'dark' : ''} h-[100dvh] flex justify-center bg-gray-100 dark:bg-black overflow-hidden`}>
+      <div className="w-full h-full max-w-md bg-gray-50 dark:bg-gray-950 flex flex-col shadow-2xl relative border-x border-gray-200 dark:border-gray-800 transition-colors duration-300">
         
-        {/* SPLASH SCREEN */}
         {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
 
-        {/* Header */}
         {showHeader && (
           <header className="bg-white dark:bg-gray-900 px-4 py-3 flex items-center justify-between shadow-sm sticky top-0 z-20 border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
             <div className="flex items-center gap-2">
@@ -362,21 +314,17 @@ function App() {
               </h1>
             </div>
             <div className="flex items-center gap-1">
-              {/* Language Switcher */}
               <button 
                 onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
                 className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors flex items-center justify-center font-bold text-xs border border-gray-200 dark:border-gray-700 w-9 h-9"
-                title="Switch Language"
               >
                 {language === 'en' ? 'Hi' : 'En'}
               </button>
 
-              {/* Patient Only Icons */}
               {!isDoctorMode && (
                 <button 
                     onClick={() => setIsMedicationPanelOpen(true)}
                     className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors relative"
-                    title="Medications"
                   >
                     <Pill size={20} />
                     {hasPendingMeds && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white dark:border-gray-900 animate-pulse"></span>}
@@ -386,7 +334,6 @@ function App() {
               <button 
                 onClick={() => setIsNotificationsOpen(true)}
                 className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors relative"
-                title="Notifications"
               >
                 <Bell size={20} />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-50 rounded-full border border-white dark:border-gray-900"></span>
@@ -395,17 +342,14 @@ function App() {
               <button 
                 onClick={() => setDarkMode(!darkMode)}
                 className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
-                title="Toggle Theme"
               >
                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
               </button>
 
-              {/* SOS - Rightmost */}
               {!isDoctorMode && (
                   <button 
                     onClick={() => setIsSOSOpen(true)}
                     className="ml-2 bg-red-600 text-white px-3 py-2 rounded-lg shadow-md hover:bg-red-700 transition animate-pulse flex items-center justify-center gap-1 font-bold"
-                    title="Emergency SOS"
                   >
                     <ShieldAlert size={18} />
                     <span>SOS</span>
@@ -415,12 +359,10 @@ function App() {
           </header>
         )}
 
-        {/* Main Content */}
         <main className="flex-1 overflow-y-auto scrollbar-hide relative">
           {renderPage()}
         </main>
 
-        {/* Patient Navigation Bar */}
         {showPatientNav && (
           <nav className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-6 py-3 flex justify-between items-center z-20 sticky bottom-0 pb-safe transition-colors duration-300">
             <button 
@@ -454,7 +396,6 @@ function App() {
           </nav>
         )}
 
-        {/* Doctor Navigation Bar */}
         {showDoctorNav && (
            <nav className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-12 py-3 flex justify-around items-center z-20 sticky bottom-0 pb-safe transition-colors duration-300">
              <button 
@@ -474,7 +415,6 @@ function App() {
            </nav>
         )}
 
-        {/* Overlays - Absolute positioning within relative container */}
         <SOSOverlay 
           isOpen={isSOSOpen} 
           onClose={() => setIsSOSOpen(false)} 

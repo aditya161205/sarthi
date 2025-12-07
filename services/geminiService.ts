@@ -1,10 +1,26 @@
-
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { Message, UserProfile, PrescriptionData } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Use process.env.API_KEY as per guidelines. 
+// Ideally, ensure your build tool (Vite/Webpack) defines process.env.API_KEY.
+const API_KEY = process.env.API_KEY;
+
+// Initialize AI only if key exists, otherwise we'll handle gracefully in functions
+const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 const TRIAGE_MODEL_NAME = 'gemini-2.5-flash';
+
+// --- MOCK RESPONSES FOR DEMO (If API Key is missing) ---
+const MOCK_TRIAGE_RESPONSE = {
+  text: "I am running in demo mode (No API Key found). Based on your inputs, please consult a general physician.",
+  options: ["Okay", "Tell me more"],
+  isFinal: true,
+  triageResult: {
+    level: "Yellow",
+    specialty: "General Physician",
+    summary: "Demo mode: Unable to process real AI request. Please check Vercel environment variables."
+  }
+};
 
 const triageSchema: Schema = {
   type: Type.OBJECT,
@@ -72,6 +88,12 @@ export const generateTriageResponse = async (
   userProfile: UserProfile,
   language: 'en' | 'hi' = 'en'
 ): Promise<any> => {
+  if (!ai) {
+    console.warn("Gemini API Key missing. Returning mock response.");
+    await new Promise(r => setTimeout(r, 1000));
+    return MOCK_TRIAGE_RESPONSE;
+  }
+
   try {
     const timelineEvents = userProfile.medicalEvents
       .map(e => `- ${e.date}: ${e.title} (${e.description})`)
@@ -157,6 +179,14 @@ export const generateTriageResponse = async (
 };
 
 export const parsePrescription = async (imageBase64: string): Promise<PrescriptionData> => {
+  if (!ai) {
+    return {
+      diagnosis: "Demo Diagnosis (API Key Missing)",
+      medications: ["Demo Med 500mg"],
+      followUp: "1 Week"
+    };
+  }
+  
   try {
     const base64Data = imageBase64.split(',')[1];
     
@@ -193,6 +223,8 @@ export const parsePrescription = async (imageBase64: string): Promise<Prescripti
 };
 
 export const generateHealthSummary = async (userProfile: UserProfile, language: 'en' | 'hi' = 'en'): Promise<string> => {
+  if (!ai) return "API Key missing. Cannot generate summary.";
+
   try {
      const timelineEvents = userProfile.medicalEvents.slice(0, 5)
       .map(e => `- ${e.date}: ${e.title} (${e.type})`)
@@ -224,6 +256,8 @@ export const generateHealthSummary = async (userProfile: UserProfile, language: 
 };
 
 export const generateHealthTip = async (userProfile: UserProfile, language: 'en' | 'hi' = 'en'): Promise<string> => {
+  if (!ai) return "Stay hydrated!";
+
   try {
     const medNames = userProfile.medications.map(m => m.name).join(', ');
     const prompt = `
