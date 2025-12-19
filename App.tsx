@@ -12,8 +12,10 @@ import {
   Pill,
   LogOut
 } from 'lucide-react';
-import { UserProfile, AppRoute, Doctor, Appointment, Notification, MedicalReport, PrescriptionData, MedicalEvent, AuthResponse, Medication } from './types';
+import { UserProfile, AppRoute, Doctor, Appointment, Notification, MedicalReport, PrescriptionData, MedicalEvent, AuthResponse, Medication, OngoingTreatment } from './types';
 import { AuthService, MOCK_PATIENT_DATA } from './services/authService';
+import VideoCallModal from './components/VideoCallModal';
+import DoctorChatView from './components/DoctorChatView';
 import { useLanguage } from './contexts/LanguageContext';
 import SOSOverlay from './components/SOSOverlay';
 import NotificationPanel from './components/NotificationPanel';
@@ -139,6 +141,10 @@ function App() {
       setCurrentRoute(AppRoute.LOGIN);
     }
   }, []);
+
+  // Global Modals State
+  const [activeVideoCall, setActiveVideoCall] = useState<OngoingTreatment | null>(null);
+  const [activeChat, setActiveChat] = useState<OngoingTreatment | null>(null);
 
   // Sync Dark Mode with DOM
   useEffect(() => {
@@ -295,7 +301,7 @@ function App() {
       case AppRoute.LOGIN: return <LoginPage onLogin={handleAuthSuccess} onNavigate={setCurrentRoute} />;
       case AppRoute.SIGNUP: return <SignupPage onSignup={handleAuthSuccess} onNavigate={setCurrentRoute} />;
       case AppRoute.ONBOARDING: return <OnboardingPage initialName={user.name} initialEmail={user.email} onComplete={handleOnboardingComplete} />;
-      case AppRoute.HOME: return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} />;
+      case AppRoute.HOME: return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} onStartVideoCall={setActiveVideoCall} onStartChat={setActiveChat} />;
       case AppRoute.TRIAGE: return <TriagePage user={user} onComplete={handleTriageComplete} />;
       case AppRoute.DOCTORS: return <DoctorsPage doctors={doctors} filterSpecialty={triageFilter} onBook={handleBookAppointment} />;
       case AppRoute.PROFILE: return <ProfilePage user={user} onUpdate={handleUpdateProfile} onLogout={handleLogout} />;
@@ -304,7 +310,7 @@ function App() {
         const apt = appointments.find(a => a.id === selectedPatientId) || null;
         return <DoctorPatientView user={isDoctorMode ? MOCK_PATIENT_DATA : user} appointment={apt} onBack={() => setCurrentRoute(AppRoute.DOCTOR_HOME)} onComplete={handleConsultationComplete} />;
       case AppRoute.DOCTOR_PROFILE: return <DoctorProfilePage doctor={currentDoctorProfile} onUpdate={handleUpdateDoctor} onLogout={handleLogout} />;
-      default: return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} />;
+      default: return <HomePage user={user} appointments={appointments} onNavigate={setCurrentRoute} onRateDoctor={handleRateAppointment} onStartVideoCall={setActiveVideoCall} onStartChat={setActiveChat} />;
     }
   };
 
@@ -452,6 +458,23 @@ function App() {
           onMarkTaken={handleMarkMedicationTaken}
           onNavigateProfile={() => { setIsMedicationPanelOpen(false); setCurrentRoute(AppRoute.PROFILE); }}
         />
+
+        {/* Global Full Screen features */}
+        {activeVideoCall && (
+          <VideoCallModal
+            treatment={activeVideoCall}
+            onClose={() => setActiveVideoCall(null)}
+          />
+        )}
+
+        {activeChat && (
+          <div className="absolute inset-0 z-[60] bg-white dark:bg-gray-900 animate-in slide-in-from-right">
+            <DoctorChatView
+              treatment={activeChat}
+              onBack={() => setActiveChat(null)}
+            />
+          </div>
+        )}
 
         <BookingSuccessModal
           appointment={lastBookedAppointment}

@@ -5,9 +5,7 @@ import { UserProfile, Appointment, AppRoute, OngoingTreatment } from '../types';
 import { generateHealthSummary, generateHealthTip } from '../services/geminiService';
 import RateDoctorModal from '../components/RateDoctorModal';
 import OngoingTreatmentCard from '../components/OngoingTreatmentCard';
-import VideoCallModal from '../components/VideoCallModal';
 import TreatmentDetailsModal from '../components/TreatmentDetailsModal';
-import DoctorChatView from '../components/DoctorChatView';
 
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -16,6 +14,8 @@ interface HomePageProps {
    appointments: Appointment[];
    onNavigate: (route: AppRoute) => void;
    onRateDoctor: (appointmentId: string, rating: number, review: string) => void;
+   onStartVideoCall: (treatment: OngoingTreatment) => void;
+   onStartChat: (treatment: OngoingTreatment) => void;
 }
 
 const MOCK_ONGOING_TREATMENTS: OngoingTreatment[] = [
@@ -41,17 +41,15 @@ const MOCK_ONGOING_TREATMENTS: OngoingTreatment[] = [
    }
 ];
 
-const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onRateDoctor }) => {
+const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onRateDoctor, onStartVideoCall, onStartChat }) => {
    const { t, language } = useLanguage();
    const [activeTab, setActiveTab] = useState<'upcoming' | 'history'>('upcoming');
    const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
    const [ratingModalAppointment, setRatingModalAppointment] = useState<Appointment | null>(null);
 
-   // New Features State
-   const [videoCallTreatment, setVideoCallTreatment] = useState<OngoingTreatment | null>(null);
+   // New Features State - Only Details Modal stays local
    const [detailsTreatment, setDetailsTreatment] = useState<OngoingTreatment | null>(null);
-   const [chatTreatment, setChatTreatment] = useState<OngoingTreatment | null>(null);
 
    // AI Insights State
    const [insightView, setInsightView] = useState<'tip' | 'summary'>('tip');
@@ -185,9 +183,9 @@ const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onR
                   <OngoingTreatmentCard
                      key={treatment.id}
                      treatment={treatment}
-                     onVideoCall={setVideoCallTreatment}
+                     onVideoCall={onStartVideoCall}
                      onShowDetails={setDetailsTreatment}
-                     onChat={() => setChatTreatment(treatment)}
+                     onChat={() => onStartChat(treatment)}
                   />
                ))}
             </div>
@@ -375,13 +373,6 @@ const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onR
                onSubmit={onRateDoctor}
             />
          )}
-         {/* New Modals */}
-         {videoCallTreatment && (
-            <VideoCallModal
-               treatment={videoCallTreatment}
-               onClose={() => setVideoCallTreatment(null)}
-            />
-         )}
 
          {detailsTreatment && (
             <TreatmentDetailsModal
@@ -389,22 +380,13 @@ const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onR
                onClose={() => setDetailsTreatment(null)}
                onChat={() => {
                   setDetailsTreatment(null);
-                  setChatTreatment(detailsTreatment);
+                  onStartChat(detailsTreatment);
                }}
                onVideoCall={(t) => {
                   setDetailsTreatment(null);
-                  setVideoCallTreatment(t);
+                  onStartVideoCall(t);
                }}
             />
-         )}
-
-         {chatTreatment && (
-            <div className="absolute inset-0 z-50 bg-white dark:bg-gray-900 animate-in slide-in-from-right">
-               <DoctorChatView
-                  treatment={chatTreatment}
-                  onBack={() => setChatTreatment(null)}
-               />
-            </div>
          )}
       </div>
    );

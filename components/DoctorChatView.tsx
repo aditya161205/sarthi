@@ -31,7 +31,7 @@ const DoctorChatView: React.FC<DoctorChatViewProps> = ({ treatment, onBack }) =>
     };
 
     return (
-        <div className="flex flex-col h-[100dvh] bg-gray-50 dark:bg-gray-950 absolute inset-0 z-[60] overflow-hidden">
+        <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-950 absolute inset-0 z-[60] overflow-hidden">
             {/* Header */}
             <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between shadow-sm sticky top-0 z-10">
                 <div className="flex items-center gap-3">
