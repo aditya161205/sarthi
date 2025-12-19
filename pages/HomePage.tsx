@@ -7,6 +7,8 @@ import RateDoctorModal from '../components/RateDoctorModal';
 import OngoingTreatmentCard from '../components/OngoingTreatmentCard';
 import VideoCallModal from '../components/VideoCallModal';
 import TreatmentDetailsModal from '../components/TreatmentDetailsModal';
+import DoctorChatView from '../components/DoctorChatView';
+
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface HomePageProps {
@@ -49,6 +51,7 @@ const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onR
    // New Features State
    const [videoCallTreatment, setVideoCallTreatment] = useState<OngoingTreatment | null>(null);
    const [detailsTreatment, setDetailsTreatment] = useState<OngoingTreatment | null>(null);
+   const [chatTreatment, setChatTreatment] = useState<OngoingTreatment | null>(null);
 
    // AI Insights State
    const [insightView, setInsightView] = useState<'tip' | 'summary'>('tip');
@@ -184,7 +187,7 @@ const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onR
                      treatment={treatment}
                      onVideoCall={setVideoCallTreatment}
                      onShowDetails={setDetailsTreatment}
-                     onChat={() => onNavigate(AppRoute.TRIAGE)} // Keeping chat redirection simple for now
+                     onChat={() => setChatTreatment(treatment)}
                   />
                ))}
             </div>
@@ -386,13 +389,22 @@ const HomePage: React.FC<HomePageProps> = ({ user, appointments, onNavigate, onR
                onClose={() => setDetailsTreatment(null)}
                onChat={() => {
                   setDetailsTreatment(null);
-                  onNavigate(AppRoute.TRIAGE);
+                  setChatTreatment(detailsTreatment);
                }}
                onVideoCall={(t) => {
                   setDetailsTreatment(null);
                   setVideoCallTreatment(t);
                }}
             />
+         )}
+
+         {chatTreatment && (
+            <div className="absolute inset-0 z-50 bg-white dark:bg-gray-900 animate-in slide-in-from-right">
+               <DoctorChatView
+                  treatment={chatTreatment}
+                  onBack={() => setChatTreatment(null)}
+               />
+            </div>
          )}
       </div>
    );

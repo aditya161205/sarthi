@@ -140,6 +140,15 @@ function App() {
     }
   }, []);
 
+  // Sync Dark Mode with DOM
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   const handleAuthSuccess = (session: AuthResponse, isRestored: boolean = false) => {
     setIsAuthenticated(true);
 

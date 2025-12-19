@@ -18,7 +18,7 @@ const translations: Record<string, Record<Language, string>> = {
   'nav.profile': { en: 'Profile', hi: 'प्रोफाइल' },
   'nav.dashboard': { en: 'Dashboard', hi: 'डैशबोर्ड' },
   'header.welcome': { en: 'Welcome Back', hi: 'स्वागत है' },
-  
+
   // Auth (Login/Signup)
   'auth.welcome': { en: 'Welcome Back', hi: 'स्वागत है' },
   'auth.signin_subtitle': { en: 'Sign in to Sarthi AI', hi: 'सारथी AI में साइन इन करें' },
@@ -99,7 +99,9 @@ const translations: Record<string, Record<Language, string>> = {
   'home.view_report': { en: 'View Report', hi: 'रिपोर्ट देखें' },
   'home.clinic': { en: 'Clinic', hi: 'क्लिनिक' },
   'home.video': { en: 'Video', hi: 'वीडियो' },
-  
+  'home.ongoing_treatments': { en: 'Ongoing Treatments', hi: 'चल रहे उपचार' },
+  'home.view_all': { en: 'View All', hi: 'सभी देखें' },
+
   // Triage
   'triage.placeholder': { en: 'Type or upload image...', hi: 'टाइप करें या फोटो डालें...' },
   'triage.analyzing': { en: 'Vaidya is thinking...', hi: 'वैद्य सोच रहे हैं...' },

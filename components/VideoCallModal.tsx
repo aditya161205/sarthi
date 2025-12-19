@@ -27,7 +27,7 @@ const VideoCallModal: React.FC<VideoCallModalProps> = ({ treatment, onClose }) =
     };
 
     return (
-        <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-50 bg-gray-900 flex flex-col items-center justify-center overflow-hidden">
             {/* Background / Main Video Feed */}
             <div className="absolute inset-0 w-full h-full">
                 <img
