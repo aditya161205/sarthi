@@ -102,6 +102,18 @@ export interface Appointment {
   userReview?: string;
 }
 
+export interface OngoingTreatment {
+  id: string;
+  title: string;
+  doctorName: string;
+  doctorImage: string;
+  progress: number; // 0-100
+  totalDuration: string; // e.g., "Month 4 of 6"
+  nextStep: string; // e.g., "Hba1c Test next week"
+  doctorSpecialty?: string;
+  history?: MedicalEvent[]; // For details view
+}
+
 export interface PrescriptionData {
   diagnosis: string;
   medications: string[];
