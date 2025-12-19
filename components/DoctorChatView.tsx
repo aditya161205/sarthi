@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Send, Paperclip, Phone, Video, MoreVertical, CheckCheck } from 'lucide-react';
+import { ArrowLeft, Send, Paperclip, Phone, Video, MoreVertical, CheckCheck, ShieldCheck } from 'lucide-react';
 import { OngoingTreatment, Message } from '../types';
 
 interface DoctorChatViewProps {
@@ -31,7 +31,7 @@ const DoctorChatView: React.FC<DoctorChatViewProps> = ({ treatment, onBack }) =>
     };
 
     return (
-        <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-950">
+        <div className="flex flex-col h-[100dvh] bg-gray-50 dark:bg-gray-950 absolute inset-0 z-[60] overflow-hidden">
             {/* Header */}
             <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-4 flex items-center justify-between shadow-sm sticky top-0 z-10">
                 <div className="flex items-center gap-3">
@@ -75,8 +75,8 @@ const DoctorChatView: React.FC<DoctorChatViewProps> = ({ treatment, onBack }) =>
                             <img src={treatment.doctorImage} className="w-6 h-6 rounded-full mr-2 mt-1" alt="Doc" />
                         )}
                         <div className={`max-w-[80%] rounded-2xl p-3 shadow-sm ${msg.role === 'user'
-                                ? 'bg-blue-600 text-white rounded-br-none'
-                                : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-none'
+                            ? 'bg-blue-600 text-white rounded-br-none'
+                            : 'bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-none'
                             }`}>
                             <p className="text-sm leading-relaxed">{msg.text}</p>
                             <div className={`flex items-center gap-1 justify-end mt-1 ${msg.role === 'user' ? 'text-blue-200' : 'text-gray-400'}`}>
@@ -115,6 +115,6 @@ const DoctorChatView: React.FC<DoctorChatViewProps> = ({ treatment, onBack }) =>
 };
 
 // Import ShieldCheck as it was missing in the top imports
-import { ShieldCheck } from 'lucide-react';
+
 
 export default DoctorChatView;
