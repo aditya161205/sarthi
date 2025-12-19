@@ -328,9 +328,7 @@ function App() {
               >
                 {language === 'en' ? 'Hi' : 'En'}
               </button>
-              <div className="hidden xs:block text-[10px] text-gray-400 font-mono border border-gray-200 dark:border-gray-700 px-1 rounded">
-                v1.1
-              </div>
+
 
               {!isDoctorMode && (
                 <button
