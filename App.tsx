@@ -12,7 +12,7 @@ import {
   Pill,
   LogOut
 } from 'lucide-react';
-import { UserProfile, AppRoute, Doctor, Appointment, Notification, MedicalReport, PrescriptionData, MedicalEvent, AuthResponse } from './types';
+import { UserProfile, AppRoute, Doctor, Appointment, Notification, MedicalReport, PrescriptionData, MedicalEvent, AuthResponse, Medication } from './types';
 import { AuthService, MOCK_PATIENT_DATA } from './services/authService';
 import { useLanguage } from './contexts/LanguageContext';
 import SOSOverlay from './components/SOSOverlay';
@@ -252,10 +252,18 @@ function App() {
       location: 'Apollo Clinic'
     };
 
+    const newMeds: Medication[] = data.medications.map(name => ({
+      id: Date.now().toString() + Math.random().toString(),
+      name,
+      dosage: 'As prescribed',
+      frequency: 'Daily',
+      taken: false
+    }));
+
     const updatedUser = {
       ...user,
       medicalEvents: [newEvent, ...user.medicalEvents],
-      medications: [...new Set([...user.medications, ...data.medications])]
+      medications: [...user.medications, ...newMeds]
     };
     setUser(updatedUser);
 
