@@ -8,7 +8,7 @@ const API_KEY = process.env.API_KEY;
 // Initialize AI only if key exists, otherwise we'll handle gracefully in functions
 const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
-const TRIAGE_MODEL_NAME = 'gemini-1.5-flash';
+const TRIAGE_MODEL_NAME = 'gemini-1.5-flash-001';
 
 // --- MOCK RESPONSES FOR DEMO (If API Key is missing) ---
 const MOCK_TRIAGE_RESPONSE = {
