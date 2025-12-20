@@ -100,8 +100,8 @@ export const generateTriageResponse = async (
       .join('\n');
 
     const medNames = userProfile.medications.map(m => m.name).join(', ');
-    const langInstruction = language === 'hi' 
-      ? "IMPORTANT: You MUST respond in Hindi (Devanagari script). Use simple, empathetic Hindi suitable for an Indian patient." 
+    const langInstruction = language === 'hi'
+      ? "IMPORTANT: You MUST respond in Hindi (Devanagari script). Use simple, empathetic Hindi suitable for an Indian patient."
       : "Respond in English.";
 
     const systemPrompt = `
@@ -120,31 +120,32 @@ export const generateTriageResponse = async (
       Summary: ${userProfile.medicalHistory}
 
       Protocol:
-      1. Ask 1-3 targeted follow-up questions to clarify symptoms. If the user uploads an image (e.g., rash, wound), analyze it.
-      2. Provide "options" for quick replies (in ${language === 'hi' ? 'Hindi' : 'English'}).
-      3. Once you have enough info, set "isFinal" to true.
-      4. For critical issues (chest pain, heavy bleeding), set Triage Level "Red" immediately and advise calling 112 or 108.
-      5. Use Indian terminology where appropriate.
-      6. Be warm, professional, and concise.
+      1. TONE: Be affirmative, emphatic, personal, and calming. Never threaten the patient. Use phrases like "Please don't worry", "Take a deep breath".
+      2. ADVICE: Along with medical questions, suggest immediate non-medical calming actions like "Please sit down and drink some water", "Rest for a moment".
+      3. Ask 1-3 targeted follow-up questions to clarify symptoms. If the user uploads an image, analyze it.
+      4. Provide "options" for quick replies (in ${language === 'hi' ? 'Hindi' : 'English'}).
+      5. Once you have enough info, set "isFinal" to true.
+      6. For critical issues (chest pain, heavy bleeding), set Triage Level "Red" immediately but stay calm. Advise calling 112 or 108 gently but urgently.
+      7. Use Indian terminology where appropriate.
     `;
 
     // Convert chat history to Gemini format
     const contents = history.map((msg) => {
       const parts: any[] = [{ text: msg.text }];
-      
+
       if (msg.image) {
         // Strip the data URL prefix (e.g. "data:image/jpeg;base64,")
         const base64Data = msg.image.split(',')[1];
         if (base64Data) {
-            parts.push({
-                inlineData: {
-                    mimeType: 'image/jpeg',
-                    data: base64Data
-                }
-            });
+          parts.push({
+            inlineData: {
+              mimeType: 'image/jpeg',
+              data: base64Data
+            }
+          });
         }
       }
-      
+
       return {
         role: msg.role === 'assistant' ? 'model' : 'user',
         parts: parts,
@@ -163,14 +164,14 @@ export const generateTriageResponse = async (
 
     const jsonText = response.text;
     if (!jsonText) throw new Error("No response from AI");
-    
+
     return JSON.parse(jsonText);
 
   } catch (error) {
     console.error("Gemini Triage Error:", error);
     return {
-      text: language === 'hi' 
-        ? "मुझे नेटवर्क से कनेक्ट करने में समस्या हो रही है। कृपया अपना कनेक्शन जांचें।" 
+      text: language === 'hi'
+        ? "मुझे नेटवर्क से कनेक्ट करने में समस्या हो रही है। कृपया अपना कनेक्शन जांचें।"
         : "I'm having trouble connecting to the network. Please check your connection or try again.",
       options: [],
       isFinal: false
@@ -186,10 +187,10 @@ export const parsePrescription = async (imageBase64: string): Promise<Prescripti
       followUp: "1 Week"
     };
   }
-  
+
   try {
     const base64Data = imageBase64.split(',')[1];
-    
+
     const response = await ai.models.generateContent({
       model: TRIAGE_MODEL_NAME,
       config: {
@@ -214,7 +215,7 @@ export const parsePrescription = async (imageBase64: string): Promise<Prescripti
 
     const jsonText = response.text;
     if (!jsonText) throw new Error("No response from AI");
-    
+
     return JSON.parse(jsonText) as PrescriptionData;
   } catch (error) {
     console.error("Prescription OCR Error:", error);
@@ -226,10 +227,10 @@ export const generateHealthSummary = async (userProfile: UserProfile, language: 
   if (!ai) return "API Key missing. Cannot generate summary.";
 
   try {
-     const timelineEvents = userProfile.medicalEvents.slice(0, 5)
+    const timelineEvents = userProfile.medicalEvents.slice(0, 5)
       .map(e => `- ${e.date}: ${e.title} (${e.type})`)
       .join('\n');
-      const medNames = userProfile.medications.map(m => m.name).join(', ');
+    const medNames = userProfile.medications.map(m => m.name).join(', ');
 
     const prompt = `
       Analyze this patient profile and provide a brief, empathetic 3-4 sentence health summary in ${language === 'hi' ? 'Hindi' : 'English'}.
