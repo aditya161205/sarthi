@@ -127,49 +127,78 @@ const TriagePage: React.FC<TriagePageProps> = ({ user, onComplete }) => {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
 
-    // Select female voice with priority
+    // Set language based on current language
+    const langMap: Record<string, string> = {
+      'en': 'en-US',
+      'hi': 'hi-IN',
+      'ta': 'ta-IN',
+      'te': 'te-IN',
+      'kn': 'kn-IN',
+      'ml': 'ml-IN',
+      'bn': 'bn-IN',
+      'mr': 'mr-IN',
+      'gu': 'gu-IN'
+    };
+    utterance.lang = langMap[language] || 'en-US';
+
+    // Aggressively select female voice
     let selectedVoice = null;
 
-    // First priority: Female voice in correct language
+    // Strategy 1: Look for explicit "female" in name (case insensitive)
     selectedVoice = availableVoices.find(voice => {
-      const isCorrectLang = language === 'hi' ?
-        (voice.lang.includes('hi') || voice.lang.includes('Hindi')) :
-        (voice.lang.includes('en'));
-
-      const isFemale = voice.name.toLowerCase().includes('female') ||
-        voice.name.toLowerCase().includes('zira') ||
-        voice.name.toLowerCase().includes('samantha') ||
-        voice.name.toLowerCase().includes('nisha') ||
-        voice.name.toLowerCase().includes('veena') ||
-        voice.name.toLowerCase().includes('rishi');
-
-      return isCorrectLang && isFemale;
+      const nameLower = voice.name.toLowerCase();
+      const langMatch = voice.lang.toLowerCase().includes(language) ||
+        voice.lang.toLowerCase().includes(langMap[language].toLowerCase());
+      const isFemale = nameLower.includes('female') ||
+        nameLower.includes('woman') ||
+        nameLower.includes('zira') ||
+        nameLower.includes('samantha') ||
+        nameLower.includes('allison') ||
+        nameLower.includes('susan') ||
+        nameLower.includes('victoria') ||
+        nameLower.includes('karen') ||
+        nameLower.includes('moira') ||
+        nameLower.includes('tessa') ||
+        nameLower.includes('veena') ||
+        nameLower.includes('nishi') ||
+        nameLower.includes('lekha');
+      return langMatch && isFemale;
     });
 
-    // Second priority: Any voice with 'Google' in name (usually good quality)
+    // Strategy 2: Google voices (usually high quality, try to get female)
     if (!selectedVoice) {
       selectedVoice = availableVoices.find(voice =>
         voice.name.includes('Google') &&
-        (language === 'hi' ? voice.lang.includes('hi') : voice.lang.includes('en'))
+        !voice.name.toLowerCase().includes('male') &&
+        (voice.lang.includes(language) || voice.lang.includes(langMap[language]))
       );
     }
 
-    // Third priority: Any voice in correct language
+    // Strategy 3: Any voice in the language (avoid explicit "male")
     if (!selectedVoice) {
       selectedVoice = availableVoices.find(voice =>
-        language === 'hi' ? voice.lang.includes('hi') : voice.lang.includes('en')
+        !voice.name.toLowerCase().includes('male') &&
+        (voice.lang.includes(language) || voice.lang.includes(langMap[language]))
+      );
+    }
+
+    // Strategy 4: Fallback - ANY voice in the language
+    if (!selectedVoice) {
+      selectedVoice = availableVoices.find(voice =>
+        voice.lang.includes(language) || voice.lang.includes(langMap[language])
       );
     }
 
     if (selectedVoice) {
       utterance.voice = selectedVoice;
-      console.log('Selected voice:', selectedVoice.name, 'Lang:', selectedVoice.lang);
+      console.log('🎙️ Selected voice:', selectedVoice.name, 'Lang:', selectedVoice.lang);
+    } else {
+      console.warn('⚠️ No suitable voice found for language:', language);
     }
 
-    // Fast, natural settings
-    utterance.rate = 1.1;
+    // Faster, more natural settings
+    utterance.rate = 1.2; // Faster
     utterance.pitch = 1.15;
     utterance.volume = 0.95;
 

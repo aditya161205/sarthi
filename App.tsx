@@ -339,13 +339,6 @@ function App() {
               </h1>
             </div>
             <div className="flex items-center gap-1">
-              <button
-                onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors flex items-center justify-center font-bold text-xs border border-gray-200 dark:border-gray-700 w-9 h-9"
-              >
-                {language === 'en' ? 'Hi' : 'En'}
-              </button>
-
 
               {!isDoctorMode && (
                 <button
@@ -383,8 +376,8 @@ function App() {
                           setShowLanguageMenu(false);
                         }}
                         className={`w-full px-4 py-2 text-left text-sm transition-colors ${language === lang
-                            ? 'bg-blue-600 text-white'
-                            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200'
+                          ? 'bg-blue-600 text-white'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200'
                           }`}
                       >
                         {LANGUAGE_NAMES[lang]}

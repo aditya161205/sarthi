@@ -100,9 +100,20 @@ export const generateTriageResponse = async (
       .join('\n');
 
     const medNames = userProfile.medications.map(m => m.name).join(', ');
-    const langInstruction = language === 'hi'
-      ? "IMPORTANT: You MUST respond in Hindi (Devanagari script). Use simple, empathetic Hindi suitable for an Indian patient."
-      : "Respond in English.";
+    const languageMap: Record<string, string> = {
+      'en': 'English',
+      'hi': 'Hindi (हिन्दी)',
+      'ta': 'Tamil (தமிழ்)',
+      'te': 'Telugu (తెలుగు)',
+      'kn': 'Kannada (ಕನ್ನಡ)',
+      'ml': 'Malayalam (മലയാളം)',
+      'bn': 'Bengali (বাংলা)',
+      'mr': 'Marathi (मराठी)',
+      'gu': 'Gujarati (ગુજરાતી)'
+    };
+
+    const selectedLanguageName = languageMap[language] || 'English';
+    const langInstruction = `You MUST respond ONLY in ${selectedLanguageName}. Do not use English if the language is not English.`;
 
     const systemPrompt = `
       You are "Vaidya AI", an intelligent and empathetic medical assistant tailored for the Indian healthcare context.
