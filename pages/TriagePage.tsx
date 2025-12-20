@@ -183,41 +183,47 @@ const TriagePage: React.FC<TriagePageProps> = ({ user, onComplete }) => {
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-950 relative transition-colors">
       {/* Voice UI when conversation mode is active */}
       {isConversationMode && (
-        <div className="absolute inset-0 z-50 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex flex-col items-center justify-center overflow-hidden">
-          <button
-            onClick={() => setIsConversationMode(false)}
-            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition"
-          >
-            <X size={24} />
-          </button>
-
-          <div className="text-center space-y-8">
-            {/* Animated pulse */}
-            <div className="relative flex items-center justify-center">
-              <div className={`w-32 h-32 rounded-full bg-blue-500 ${isSpeaking ? 'animate-ping' : 'animate-pulse'} opacity-30 absolute`}></div>
-              <div className={`w-24 h-24 rounded-full bg-blue-400 ${isSpeaking ? 'animate-ping' : 'animate-pulse'} opacity-50 absolute`}></div>
-              <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center relative">
-                <Volume2 size={32} className={isSpeaking ? 'text-blue-600 animate-bounce' : 'text-blue-600'} />
-              </div>
-            </div>
-
+        <div className="absolute inset-0 z-50 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex flex-col overflow-hidden">
+          {/* Header */}
+          <div className="p-4 flex items-center justify-between">
             <div className="text-white">
-              <h2 className="text-3xl font-bold mb-2">
-                {isSpeaking ? (language === 'hi' ? 'बोल रहा है...' : 'Speaking...') :
-                  isTyping ? (language === 'hi' ? 'सोच रहा है...' : 'Thinking...') :
-                    (language === 'hi' ? 'सुन रहा है...' : 'Listening...')}
-              </h2>
-              <p className="text-blue-200">
-                {language === 'hi' ? 'अपने लक्षण बताएं' : 'Describe your symptoms'}
-              </p>
+              <h3 className="font-bold text-lg">Voice Conversation</h3>
+              <p className="text-sm text-blue-200">{isSpeaking ? 'AI Speaking...' : isTyping ? 'Thinking...' : 'Your turn to speak'}</p>
             </div>
+            <button
+              onClick={() => setIsConversationMode(false)}
+              className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition"
+            >
+              <X size={24} />
+            </button>
+          </div>
 
-            {/* Last message */}
-            {messages[messages.length - 1] && (
-              <div className="max-w-md bg-white/10 backdrop-blur-lg p-4 rounded-2xl text-white text-sm">
-                {messages[messages.length - 1].text}
+          {/* Messages display */}
+          <div className="flex-1 overflow-y-auto px-4 space-y-3">
+            {messages.slice(-5).map((msg) => (
+              <div key={msg.id} className={`p-3 rounded-lg ${msg.role === 'user' ? 'bg-white/20 ml-8' : 'bg-white/10 mr-8'}`}>
+                <p className="text-white text-sm">{msg.text}</p>
               </div>
-            )}
+            ))}
+          </div>
+
+          {/* Animated indicator */}
+          <div className="flex flex-col items-center justify-center py-8">
+            <div className="relative flex items-center justify-center mb-4">
+              <div className={`w-24 h-24 rounded-full bg-blue-500 ${isSpeaking ? 'animate-ping' : 'animate-pulse'} opacity-30 absolute`}></div>
+              <div className={`w-16 h-16 rounded-full bg-blue-400 ${isSpeaking ? 'animate-ping' : 'animate-pulse'} opacity-50 absolute`}></div>
+              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center relative">
+                <Volume2 size={24} className={isSpeaking ? 'text-blue-600 animate-bounce' : 'text-blue-600'} />
+              </div>
+            </div>
+          </div>
+
+          {/* Voice Input Button */}
+          <div className="p-6 flex justify-center">
+            <VoiceInput
+              onTranscript={(text) => handleSendMessage(text)}
+              isProcessing={isTyping || isSpeaking}
+            />
           </div>
         </div>
       )}

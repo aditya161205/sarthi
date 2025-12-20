@@ -10,13 +10,14 @@ import {
   Bell,
   Briefcase,
   Pill,
-  LogOut
+  LogOut,
+  Languages
 } from 'lucide-react';
 import { UserProfile, AppRoute, Doctor, Appointment, Notification, MedicalReport, PrescriptionData, MedicalEvent, AuthResponse, Medication, OngoingTreatment } from './types';
 import { AuthService, MOCK_PATIENT_DATA } from './services/authService';
 import VideoCallModal from './components/VideoCallModal';
 import DoctorChatView from './components/DoctorChatView';
-import { useLanguage } from './contexts/LanguageContext';
+import { useLanguage, LANGUAGE_NAMES } from './contexts/LanguageContext';
 import SOSOverlay from './components/SOSOverlay';
 import NotificationPanel from './components/NotificationPanel';
 import MedicationPanel from './components/MedicationPanel';
@@ -145,6 +146,7 @@ function App() {
   // Global Modals State
   const [activeVideoCall, setActiveVideoCall] = useState<OngoingTreatment | null>(null);
   const [activeChat, setActiveChat] = useState<OngoingTreatment | null>(null);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
 
   // Sync Dark Mode with DOM
   useEffect(() => {
@@ -362,12 +364,46 @@ function App() {
                 <Bell size={20} />
                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-50 rounded-full border border-white dark:border-gray-900"></span>
               </button>
+              {/* Language Selector */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <Languages size={20} className="text-gray-600 dark:text-gray-300" />
+                </button>
 
+                {showLanguageMenu && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden">
+                    {(Object.keys(LANGUAGE_NAMES) as Array<keyof typeof LANGUAGE_NAMES>).map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => {
+                          setLanguage(lang);
+                          setShowLanguageMenu(false);
+                        }}
+                        className={`w-full px-4 py-2 text-left text-sm transition-colors ${language === lang
+                            ? 'bg-blue-600 text-white'
+                            : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200'
+                          }`}
+                      >
+                        {LANGUAGE_NAMES[lang]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Dark Mode Toggle */}
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                {darkMode ? (
+                  <Sun size={20} className="text-gray-600 dark:text-gray-300" />
+                ) : (
+                  <Moon size={20} className="text-gray-600 dark:text-gray-300" />
+                )}
               </button>
 
               {!isDoctorMode && (
