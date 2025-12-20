@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type Language = 'en' | 'hi';
+type Language = 'en' | 'hi' | 'ta' | 'te' | 'kn' | 'ml' | 'bn' | 'mr' | 'gu';
 
 interface LanguageContextType {
   language: Language;
@@ -9,9 +9,31 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const translations: Record<string, Record<Language, string>> = {
-  // Navigation & Header
-  'app.name': { en: 'Sarthi AI', hi: 'सारथी AI' },
+export const LANGUAGE_NAMES: Record<Language, string> = {
+  en: 'English',
+  hi: '\u0939\u093f\u0928\u094d\u0926\u0940', // Hindi
+  ta: '\u0ba4\u0bae\u0bbf\u0bb4\u0bcd', // Tamil
+  te: '\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41', // Telugu
+  kn: '\u0c95\u0ca8\u0ccd\u0ca8\u0ca1', // Kannada
+  ml: '\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02', // Malayalam
+  bn: '\u09ac\u09be\u0982\u09b2\u09be', // Bengali
+  mr: '\u092e\u0930\u093e\u0920\u0940', // Marathi
+  gu: '\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0' // Gujarati
+};
+
+const translations: Record<string, Partial<Record<Language, string>>> = {
+  // App name
+  'app.name': {
+    en: 'Sarthi AI',
+    hi: '\u0938\u093e\u0930\u0925\u0940 AI',
+    ta: '\u0b9a\u0bbe\u0bb0\u0ba4\u0bbf AI',
+    te: '\u0c38\u0c3e\u0c30\u0c25\u0c3f AI',
+    kn: '\u0cb8\u0cbe\u0cb0\u0ca5\u0cbf AI',
+    ml: '\u0d38\u0d3e\u0d30\u0d25\u0d3f AI',
+    bn: '\u09b8\u09be\u09b0\u09a5\u09bf AI',
+    mr: '\u0938\u093e\u0930\u0925\u0940 AI',
+    gu: '\u0ab8\u0abe\u0ab0\u0aa5\u0ac0 AI'
+  },
   'nav.home': { en: 'Home', hi: 'होम' },
   'nav.triage': { en: 'Triage', hi: 'जांच' },
   'nav.doctors': { en: 'Doctors', hi: 'डॉक्टर्स' },
@@ -226,7 +248,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [language, setLanguage] = useState<Language>('en');
 
   const t = (key: string): string => {
-    return translations[key]?.[language] || key;
+    return translations[key]?.[language] || translations[key]?.en || key;
   };
 
   return (

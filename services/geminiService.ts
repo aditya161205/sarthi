@@ -86,7 +86,7 @@ const prescriptionSchema: Schema = {
 export const generateTriageResponse = async (
   history: Message[],
   userProfile: UserProfile,
-  language: 'en' | 'hi' = 'en'
+  language: string = 'en'
 ): Promise<any> => {
   if (!ai) {
     console.warn("Gemini API Key missing. Returning mock response.");
@@ -223,7 +223,7 @@ export const parsePrescription = async (imageBase64: string): Promise<Prescripti
   }
 };
 
-export const generateHealthSummary = async (userProfile: UserProfile, language: 'en' | 'hi' = 'en'): Promise<string> => {
+export const generateHealthSummary = async (userProfile: UserProfile, language: string = 'en'): Promise<string> => {
   if (!ai) return "API Key missing. Cannot generate summary.";
 
   try {
@@ -256,7 +256,7 @@ export const generateHealthSummary = async (userProfile: UserProfile, language: 
   }
 };
 
-export const generateHealthTip = async (userProfile: UserProfile, language: 'en' | 'hi' = 'en'): Promise<string> => {
+export const generateHealthTip = async (userProfile: UserProfile, language: string = 'en'): Promise<string> => {
   if (!ai) return "Stay hydrated!";
 
   try {
