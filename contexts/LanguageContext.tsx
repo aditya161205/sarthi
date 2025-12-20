@@ -25,21 +25,32 @@ const translations: Record<string, Partial<Record<Language, string>>> = {
   // App name
   'app.name': {
     en: 'Sarthi AI',
-    hi: '\u0938\u093e\u0930\u0925\u0940 AI',
-    ta: '\u0b9a\u0bbe\u0bb0\u0ba4\u0bbf AI',
-    te: '\u0c38\u0c3e\u0c30\u0c25\u0c3f AI',
-    kn: '\u0cb8\u0cbe\u0cb0\u0ca5\u0cbf AI',
-    ml: '\u0d38\u0d3e\u0d30\u0d25\u0d3f AI',
-    bn: '\u09b8\u09be\u09b0\u09a5\u09bf AI',
-    mr: '\u0938\u093e\u0930\u0925\u0940 AI',
-    gu: '\u0ab8\u0abe\u0ab0\u0aa5\u0ac0 AI'
+    hi: 'सारथी AI',
+    ta: 'சாரதி AI',
+    te: 'సారథి AI',
+    kn: 'ಸಾರಥಿ AI',
+    ml: 'സാരഥി AI',
+    bn: 'সারথি AI',
+    mr: 'सारथी AI',
+    gu: 'સારથી AI'
   },
-  'nav.home': { en: 'Home', hi: 'होम' },
-  'nav.triage': { en: 'Triage', hi: 'जांच' },
-  'nav.doctors': { en: 'Doctors', hi: 'डॉक्टर्स' },
-  'nav.profile': { en: 'Profile', hi: 'प्रोफाइल' },
-  'nav.dashboard': { en: 'Dashboard', hi: 'डैशबोर्ड' },
-  'header.welcome': { en: 'Welcome Back', hi: 'स्वागत है' },
+  'nav.home': { en: 'Home', hi: 'होम', ta: 'முகப்பு', te: 'హోమ్', kn: 'ಮುಖಪುಟ', ml: 'ഹോം', bn: 'হোম', mr: 'होम', gu: 'હોમ' },
+  'nav.triage': { en: 'Triage', hi: 'जांच', ta: 'பரிசோதனை', te: 'పరీక్ష', kn: 'ಪರೀಕ್ಷೆ', ml: 'പരിശോധന', bn: 'পরীক্ষা', mr: 'तपासणी', gu: 'તપાસ' },
+  'nav.doctors': { en: 'Doctors', hi: 'डॉक्टर्स', ta: 'மருத்துவர்கள்', te: 'వైద్యులు', kn: 'ವೈದ್ಯರು', ml: 'ഡോക്ടർമാർ', bn: 'ডাক্তারগণ', mr: 'डॉक्टर', gu: 'ડૉક્ટર' },
+  'nav.profile': { en: 'Profile', hi: 'प्रोफाइल', ta: 'சுயவிவரம்', te: 'ಪ್ರೊಫೈಲ್', kn: 'ಪ್ರೊಫೈಲ್', ml: 'പ്രൊഫൈൽ', bn: 'প্রফাইল', mr: 'प्रोफाइल', gu: 'પ્રોફાઇલ' },
+  'nav.dashboard': { en: 'Dashboard', hi: 'डैशबोर्ड', ta: 'டாஷ்போர்டு', te: 'డాష్‌బోర్డ్', kn: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್', ml: 'ഡാഷ്ബോർഡ്', bn: 'ড্যাশবোর্ড', mr: 'डॅशबोर्ड', gu: 'ડેશબೋರ್ડ' },
+  'header.welcome': { en: 'Welcome Back', hi: 'स्वागत है', ta: 'மீண்டும் வரவேற்கிறோம்', te: 'స్వాగతం', kn: 'ಸ್ವಾಗತ', ml: 'ಸ್വാഗതം', bn: 'স্বাগতম', mr: 'स्वागत', gu: 'સ્વાગત' },
+
+  // Home page
+  'home.symptoms_title': { en: 'SYMPTOMS?', hi: 'लक्षण?', ta: 'அறிகுறிகள்?', te: 'లక్షణాలు?', kn: 'ಲಕ್ಷಣಗಳು?', ml: 'ലക്ഷണങ്ങൾ?', bn: 'লক্ষণ?', mr: 'लक्षणे?', gu: 'લક્ષણો?' },
+  'home.chat_vaidya': { en: 'Chat with Vaidya AI', hi: 'वैद्य AI से चैट करें', ta: 'வைத்ய AI உடன் அரட்டை', te: 'వైద్య AI తో చాట్', kn: 'ವೈದ್ಯಾ AI ಜೊತೆ ಚಾಟ್', ml: 'വൈദ്യ AI യുമായി ചാറ്റ്', bn: 'বৈদ্য AI এর সাথে চ্যাট', mr: 'वैद्य AI शी चॅट करा', gu: 'વૈદ્ય AI સાથે ચેટ' },
+  'home.daily_health_tip': { en: 'DAILY HEALTH TIP', hi: 'दैनिक स्वास्थ्य टिप', ta: 'தினசரி சுகாதார உதவிக்குறிப்பு', te: 'రోజువారీ ఆరోగ్య చిట్కా', kn: 'ದೈನಂದಿನ ಆರೋಗ್ಯ ಸಲಹೆ', ml: 'ദൈനംദിന ആരോഗ്യ നುറുങ്ങ്', bn: 'দৈনিক স্বাস্থ্য টিপস', mr: 'दैनिक आरोग्य टीप', gu: 'દૈનિક આરોગ્ય ટીપ' },
+  'home.ongoing_treatments': { en: 'Ongoing Treatments', hi: 'चल रहे उपचार', ta: 'தொடரும் சிகிச்சைகள்', te: 'కొనసాగుతున్న చికిత్సలు', kn: 'ನಡೆಯುತ್ತಿರುವ ಚಿಕಿತ್ಸೆಗಳು', ml: 'നടന്നുകൊണ്ടിരിക്കുന്ന ചികിത്സകൾ', bn: 'চলমান চিকিৎসা', mr: 'सुरू असलेली उपचार', gu: 'ચાલુ સારવાર' },
+  'home.view_all': { en: 'VIEW ALL', hi: 'सभी देखें', ta: 'அனைத்தையும் காண்க', te: 'అన్నీ చూడండి', kn: 'ಎಲ್ಲವನ್ನು ವೀಕ್ಷಿಸಿ', ml: 'എല്ലാം കാണുക', bn: 'সব দেখুন', mr: 'सरळ पहा', gu: 'બધા જુઓ' },
+
+  // Common buttons
+  'common.chat': { en: 'Chat', hi: 'चैट', ta: 'அரட்டை', te: 'చాట్', kn: 'ಚಾಟ್', ml: 'ചാറ്റ്', bn: 'চ্যাট', mr: 'चॅट', gu: 'ચેટ' },
+  'common.video': { en: 'Video', hi: 'वीडियो', ta: 'வீடியோ', te: 'వీడియో', kn: 'ವಿಡಿಯೋ', ml: 'വീಡಿಯോ', bn: 'ভিডিও', mr: 'व्हिडिओ', gu: 'વિડીયો' },
 
   // Auth (Login/Signup)
   'auth.welcome': { en: 'Welcome Back', hi: 'स्वागत है' },
@@ -121,8 +132,6 @@ const translations: Record<string, Partial<Record<Language, string>>> = {
   'home.view_report': { en: 'View Report', hi: 'रिपोर्ट देखें' },
   'home.clinic': { en: 'Clinic', hi: 'क्लिनिक' },
   'home.video': { en: 'Video', hi: 'वीडियो' },
-  'home.ongoing_treatments': { en: 'Ongoing Treatments', hi: 'चल रहे उपचार' },
-  'home.view_all': { en: 'View All', hi: 'सभी देखें' },
 
   // Triage
   'triage.placeholder': { en: 'Type or upload image...', hi: 'टाइप करें या फोटो डालें...' },
