@@ -27,7 +27,7 @@ const TriagePage: React.FC<TriagePageProps> = ({ user, onComplete }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [result, setResult] = useState<TriageResult | null>(null);
-  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const [isConversationMode, setIsConversationMode] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -100,7 +100,7 @@ const TriagePage: React.FC<TriagePageProps> = ({ user, onComplete }) => {
       setResult(aiResponse.triageResult);
     }
 
-    if (isVoiceMode) {
+    if (isConversationMode) {
       speak(aiResponse.text);
     }
   };
@@ -108,10 +108,29 @@ const TriagePage: React.FC<TriagePageProps> = ({ user, onComplete }) => {
   const speak = (text: string) => {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel(); // Stop previous
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = language === 'hi' ? 'hi-IN' : 'en-IN';
-    utterance.rate = 0.9; // Slightly slower/calming
-    utterance.pitch = 1.0;
+
+    // Select female voice
+    const voices = window.speechSynthesis.getVoices();
+    const femaleVoice = voices.find(voice =>
+      voice.name.includes('Female') ||
+      voice.name.includes('Zira') ||
+      voice.name.includes('Samantha') ||
+      voice.name.includes('Google UK English Female') ||
+      (voice.lang.includes('en') && voice.name.toLowerCase().includes('female'))
+    );
+
+    if (femaleVoice) {
+      utterance.voice = femaleVoice;
+    }
+
+    // Natural, calm settings
+    utterance.rate = 0.85; // Slower for clarity
+    utterance.pitch = 1.1; // Slightly higher for warmth
+    utterance.volume = 0.9; // Softer
+
     window.speechSynthesis.speak(utterance);
   };
 
@@ -220,13 +239,14 @@ const TriagePage: React.FC<TriagePageProps> = ({ user, onComplete }) => {
         </div>
       )}
 
-      {/* Floating Voice Mode Toggle */}
+      {/* Floating Voice Conversation Mode Toggle */}
       <button
-        onClick={() => setIsVoiceMode(!isVoiceMode)}
-        className={`absolute top-4 right-4 z-30 p-2 rounded-full shadow-md transition-colors ${isVoiceMode ? 'bg-blue-600 text-white animate-pulse' : 'bg-white dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700'
+        onClick={() => setIsConversationMode(!isConversationMode)}
+        className={`absolute top-4 right-4 z-30 p-3 rounded-full shadow-lg transition-all ${isConversationMode ? 'bg-blue-600 text-white animate-pulse' : 'bg-white dark:bg-gray-800 text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50'
           }`}
+        title={isConversationMode ? 'Voice Conversation Active' : 'Enable Voice Conversation'}
       >
-        {isVoiceMode ? <Volume2 size={20} /> : <VolumeX size={20} />}
+        {isConversationMode ? <Volume2 size={20} /> : <VolumeX size={20} />}
       </button>
 
       {/* Input Area */}
